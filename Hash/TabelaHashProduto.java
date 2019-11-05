@@ -1,19 +1,18 @@
 public class TabelaHashProduto {
 
-	private int M;	/// tamanho da tabela hash.
-    				/// M deve ser um número primo grande para diminuirmos a probabilidade de colisões.
+	private int M;	
 
-	//private ListaProduto[] tabelaProdutos; 	/// tabela que referenciará todas as listas lineares encadeadas de produtos.
-    	private CelulaProduto[] tabelaProduto; 									/// Nesse caso, estamos utilizando uma tabela hash com endereçamento em separado,
-    										/// ou seja, os produtos são armazenados em listas lineares encadeadas.
+	//private ListaProduto[] tabelaProdutos; 
+      private CelulaProduto[] tabelaProduto; 
 
 	public TabelaHashProduto(int tamanho){
 		int i = 0;
 		this.M = tamanho;
 		//this.tabelaProdutos = new ListaProduto[M];
+		this.tabelaProduto = new CelulaProduto[M];
 		while(i < M){
 			//tabelaProdutos[i] = new ListaProduto();
-			tabelaProduto[i] = new CelulaProduto();
+			tabelaProduto[i] = null;
 			i++;
 		}
 	}
@@ -33,20 +32,35 @@ public class TabelaHashProduto {
 		}*/
 		
 		//HASH COM ENDERECAMENTO ABERTO
-		if(tabelaProduto[i] != null)
+		CelulaProduto aux = new CelulaProduto();
+		aux.item = produtoNovo;
+		if(tabelaProduto[i] == null) {
+			tabelaProduto[i] = aux;
+			return i;
+		}
+		else {
+			tabelaProduto[i+1] = aux;
+			return 1+i;
+		}
 	}
 
 	public Produto pesquisar(int codigoBarras){
 		int i = funcaoHash(codigoBarras);
-		return tabelaProdutos[i].localizar(codigoBarras);
+		//return tabelaProdutos[i].localizar(codigoBarras);
+		
+		if(tabelaProduto[i].item.getCodigoBarras() == codigoBarras)
+			return tabelaProduto[i].item;
+		else
+			return tabelaProduto[i+1].item;
 	}
 
 	public void imprimir(){
 		int i = 0;
 		
 		while(i < M){
-			tabelaProdutos[i].imprimir();
-			System.out.print("\n");
+			//tabelaProdutos[i].imprimir();
+
+			System.out.print(tabelaProduto[i].item.getCodigoBarras() + " " + tabelaProduto[i].item.getNome() + " " + tabelaProduto[i].item.getPrecoUnitario() + "\n");
 			i++;
 		}
 		
